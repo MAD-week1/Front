@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/Home_view_model.dart';
+import '../View/image_view.dart';
+
 
 class HomeView extends StatelessWidget {
   @override
@@ -39,12 +41,32 @@ class HomeView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('갤러리', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        Icon(Icons.arrow_forward),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => GalleryPage()),
+                            );
+                          },
+                          child: Text(
+                            '갤러리',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.arrow_forward),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => GalleryPage()),
+                            );
+                          },
+                        ),
                       ],
                     ),
                     SizedBox(height: 8),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(
                         viewModel.galleryImages.length,
                             (index) {
@@ -56,8 +78,12 @@ class HomeView extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Colors.grey[300],
                               borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.grey[500]!,
+                                width: 2,
+                              ),
                               image: DecorationImage(
-                                image: AssetImage(image.path), // 이미지 경로 활용
+                                image: AssetImage(image.path), // GalleryImage 객체의 path 속성
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -65,7 +91,73 @@ class HomeView extends StatelessWidget {
                         },
                       ),
                     ),
-                    // 이후 다른 섹션 (연락처, 게시판 등)
+                    SizedBox(height: 24),
+
+                    // 연락처 섹션
+                    Text('연락처', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 8),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 2.8,
+                      ),
+                      itemCount: viewModel.contacts.length,
+                      itemBuilder: (context, index) {
+                        final contact = viewModel.contacts[index];
+                        return Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  contact.name,
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  contact.phone,
+                                  style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 24),
+
+                    // 게시판 섹션
+                    Text('게시판', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 8),
+                    ...viewModel.boardPosts.map((post) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey[300],
+                          radius: 20,
+                        ),
+                        title: Text(post.content),
+                        subtitle: Row(
+                          children: [
+                            Icon(Icons.favorite_border, size: 16, color: Colors.grey),
+                            SizedBox(width: 4),
+                            Text('공감 ${post.likes}', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                            SizedBox(width: 16),
+                            Icon(Icons.chat_bubble_outline, size: 16, color: Colors.grey),
+                            SizedBox(width: 4),
+                            Text('댓글 ${post.comments}', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                   ],
                 ),
               ),
@@ -73,6 +165,7 @@ class HomeView extends StatelessWidget {
           },
         ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
@@ -83,6 +176,7 @@ class HomeView extends StatelessWidget {
           currentIndex: 0,
           onTap: (index) {},
         ),
+        backgroundColor: Colors.white,
       ),
     );
   }

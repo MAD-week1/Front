@@ -6,6 +6,9 @@ import 'package:mad_week1/View/Home_view.dart';
 import 'package:mad_week1/ViewModel/Home_view_model.dart';
 import 'package:provider/provider.dart';
 
+import 'View/image_view.dart';
+import 'ViewModel/image_view_model.dart';
+
 Future<void> main() async {
   // .env 파일 로드
   await dotenv.load(fileName: ".env");
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
-
+        ChangeNotifierProvider(create: (_) => GalleryViewModel()),
 
 
       ],
@@ -28,6 +31,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => HomeView(),
+          'gallery': (context) => GalleryPage(),
 
 
         },

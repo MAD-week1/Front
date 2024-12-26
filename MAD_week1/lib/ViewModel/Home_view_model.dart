@@ -9,9 +9,9 @@ class HomeViewModel extends ChangeNotifier {
   void loadSampleData() {
     // 갤러리 이미지 데이터
     galleryImages = [
-      GalleryImage(title: 'Image1', path: 'assets/images/image1.png'),
-      GalleryImage(title: 'Image2', path: 'assets/images/image2.png'),
-      GalleryImage(title: 'Image3', path: 'assets/images/image3.png'),
+      GalleryImage(title: 'Image1', path: 'assets/images/ai_fit.png'),
+      GalleryImage(title: 'Image2', path: 'assets/images/temp_image.png'),
+      GalleryImage(title: 'Image3', path: 'assets/images/energy.png'),
     ];
 
     // 연락처 데이터
