@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mad_week1/View/Home_view.dart';
 import 'package:mad_week1/ViewModel/Home_view_model.dart';
+import 'package:mad_week1/ViewModel/message_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'View/image_view.dart';
+import 'View/message_view.dart';
 import 'ViewModel/image_view_model.dart';
 
 Future<void> main() async {
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => GalleryViewModel()),
-
+        ChangeNotifierProvider(create: (_) => CommentViewModel()),
 
       ],
       child: MaterialApp(
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => HomeView(),
           'gallery': (context) => GalleryPage(),
+          'comment': (context) => CommentPage(),
 
 
         },

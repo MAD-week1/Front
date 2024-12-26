@@ -6,6 +6,8 @@ class HomeViewModel extends ChangeNotifier {
   List<BoardPost> boardPosts = [];
   List<GalleryImage> galleryImages = [];
 
+
+
   void loadSampleData() {
     // 갤러리 이미지 데이터
     galleryImages = [

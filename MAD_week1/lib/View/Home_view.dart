@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewModel/Home_view_model.dart';
 import '../View/image_view.dart';
-
+import '../View/message_view.dart'; // CommentPage import
 
 class HomeView extends StatelessWidget {
   @override
@@ -136,28 +136,43 @@ class HomeView extends StatelessWidget {
                     SizedBox(height: 24),
 
                     // 게시판 섹션
-                    Text('게시판', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CommentPage()),
+                        );
+                      },
+                      child: Text(
+                        '게시판',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     SizedBox(height: 8),
-                    ...viewModel.boardPosts.map((post) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.grey[300],
-                          radius: 20,
+
+                    // 게시판 안내 텍스트
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CommentPage()),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: Center(
+                          child: Text(
+                            '연락처를 공유한 사람들과 대화를 나누세요',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        title: Text(post.content),
-                        subtitle: Row(
-                          children: [
-                            Icon(Icons.favorite_border, size: 16, color: Colors.grey),
-                            SizedBox(width: 4),
-                            Text('공감 ${post.likes}', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                            SizedBox(width: 16),
-                            Icon(Icons.chat_bubble_outline, size: 16, color: Colors.grey),
-                            SizedBox(width: 4),
-                            Text('댓글 ${post.comments}', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+                      ),
+                    ),
                   ],
                 ),
               ),
