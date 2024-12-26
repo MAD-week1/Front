@@ -1,22 +1,43 @@
-class HomeModel {
+class Contact {
   final String name;
   final String phone;
 
-  HomeModel({required this.name, required this.phone});
+  Contact({required this.name, required this.phone});
 
-  // JSON 데이터를 HomeModel 객체로 변환
-  factory HomeModel.fromJson(Map<String, dynamic> json) {
-    return HomeModel(
-      name: json['name'] ?? 'Unknown',
-      phone: json['phone'] ?? 'N/A',
+  factory Contact.fromJson(Map<String, dynamic> json) {
+    return Contact(
+      name: json['name'],
+      phone: json['phone'],
     );
   }
+}
 
-  // HomeModel 객체를 JSON 형식으로 변환
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'phone': phone,
-    };
+class BoardPost {
+  final String content;
+  final int likes;
+  final int comments;
+
+  BoardPost({required this.content, required this.likes, required this.comments});
+
+  factory BoardPost.fromJson(Map<String, dynamic> json) {
+    return BoardPost(
+      content: json['content'],
+      likes: json['likes'],
+      comments: json['comments'],
+    );
+  }
+}
+
+class GalleryImage {
+  final String title;
+  final String path;
+
+  GalleryImage({required this.title, required this.path});
+
+  factory GalleryImage.fromJson(Map<String, dynamic> json) {
+    return GalleryImage(
+      title: json['title'],
+      path: json['path'],
+    );
   }
 }
