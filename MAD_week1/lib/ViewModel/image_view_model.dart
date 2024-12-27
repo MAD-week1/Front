@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
-import '../model/Home.dart';
+import '../Model/Home.dart';
 
 class GalleryViewModel extends ChangeNotifier {
   List<GalleryImage> galleryImages = [];
+  bool isLoading = true;
 
   void loadGalleryData() {
     galleryImages = [
@@ -17,6 +18,7 @@ class GalleryViewModel extends ChangeNotifier {
       GalleryImage(title: 'Image9', path: 'assets/images/robot.png'),
     ];
 
+    isLoading = false;
     notifyListeners();
   }
 }
