@@ -22,6 +22,13 @@ class HomeView extends StatelessWidget {
       );
     }
 
+    // 연락처 미리보기 데이터 결정
+    final previewContacts = viewModel.contacts.length >= 4
+        ? viewModel.contacts.take(4).toList() // 4개 이상일 때 4개만 가져옴
+        : viewModel.contacts.length >= 2
+        ? viewModel.contacts.take(2).toList() // 2개 이상일 때 2개만 가져옴
+        : []; // 2개 미만일 경우 빈 리스트
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -30,7 +37,8 @@ class HomeView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             'qwer',
-            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
         centerTitle: false,
@@ -56,12 +64,14 @@ class HomeView extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => GalleryPage()),
+                        MaterialPageRoute(
+                            builder: (context) => GalleryPage()),
                       );
                     },
                     child: Text(
                       '갤러리',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                   IconButton(
@@ -69,7 +79,8 @@ class HomeView extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => GalleryPage()),
+                        MaterialPageRoute(
+                            builder: (context) => GalleryPage()),
                       );
                     },
                   ),
@@ -105,62 +116,88 @@ class HomeView extends StatelessWidget {
               SizedBox(height: 24),
 
               // 연락처 섹션
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '연락처',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '연락처',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.arrow_forward),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ContactView()), // 연락처 페이지로 이동
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ContactView()), // 연락처 페이지로 이동
-                      );
-                    },
-                  ),
+                  SizedBox(height: 8),
+
+                  // 연락처 미리보기 (2개 이상일 때만 표시)
+                  if (previewContacts.isNotEmpty)
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 2.8,
+                      ),
+                      itemCount: previewContacts.length,
+                      itemBuilder: (context, index) {
+                        final contact = previewContacts[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContactView(), // 연락처 탭으로 이동
+                              ),
+                            );
+                          },
+                          child: Card(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    contact.name,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    contact.phone,
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey[700]),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                 ],
               ),
-              SizedBox(height: 8),
-              GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 2.8,
-                ),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  final contact = viewModel.contacts[index];
-                  return Card(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 2,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            contact.name,
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            contact.phone,
-                            style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+
+
               SizedBox(height: 24),
 
               // 게시판 섹션
