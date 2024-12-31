@@ -2,6 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mad_week1/View/Home_view.dart';
+import 'package:mad_week1/View/welcome.dart';
 import 'package:mad_week1/ViewModel/Home_view_model.dart';
 import 'package:mad_week1/ViewModel/message_view_model.dart';
 import 'package:provider/provider.dart';
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
-          '/': (context) => HomeView(),
+          '/': (context) => SplashScreen(),
           '/gallery': (context) => GalleryPage(),
           '/comment': (context) => CommentPage(),
           '/contact': (context) => ContactView(), // 연락처 경로 추가
