@@ -82,6 +82,7 @@ class GalleryViewModel extends ChangeNotifier {
       );
       galleryImages.add(newImage);
       await saveToJson(jsonFilePath);
+      notifyListeners();
     } catch (error) {
       debugPrint('Error adding image: $error');
     }
@@ -107,6 +108,7 @@ class GalleryViewModel extends ChangeNotifier {
     } catch (error) {
       debugPrint('Error deleting images: $error');
     }
+    notifyListeners();
   }
 
 

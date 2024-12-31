@@ -51,7 +51,7 @@ class _SpamFilterPageState extends State<SpamFilterPage> {
                           itemBuilder: (context, index) {
                             final message = spamFilterViewModel.spamMessages[index];
                             return ListTile(
-                              title: Text(message, style: TextStyle(fontSize: 10),),
+                              title: Text(message, style: TextStyle(fontSize: 15),),
                             );
                           },
                         ),
@@ -76,7 +76,7 @@ class _SpamFilterPageState extends State<SpamFilterPage> {
                                     SnackBar(content: Text('복사되었습니다.')),);
                               },
                               child: ListTile(
-                                title: Text(message, style: TextStyle(fontSize: 10),),
+                                title: Text(message, style: TextStyle(fontSize: 15),),
                               ),
                             );
 
