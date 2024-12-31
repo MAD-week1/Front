@@ -10,15 +10,15 @@
 		</data>
 		<key>flutter_assets/.env</key>
 		<data>
-		7UtPqD7XWp0CdHYEhDLjjT/LP3w=
+		NSIDzZoX94UXsiyRUsUYtRRzEjo=
 		</data>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<data>
-		Q8uVETBh78bGWD1ZdHI6snXnS5I=
+		5iJzegHZtd4ohlqYMT8915KTb3M=
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		aX67UTnUb9fPRrSaIm18vfRFYxM=
+		8U5tqOaM5KY7UUrhR+WjK8dO7ao=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -26,15 +26,27 @@
 		</data>
 		<key>flutter_assets/NOTICES.Z</key>
 		<data>
-		iB/OBbFoGsosBPHtp+kYJZ5bXwE=
+		0eqEqiNnuiZP2VF/07h2dWiRVT4=
+		</data>
+		<key>flutter_assets/assets/contacts.json</key>
+		<data>
+		Qr95C4nPGqvmAVdTOh60HcQBG2c=
 		</data>
 		<key>flutter_assets/assets/images.json</key>
 		<data>
 		xphdXCAFwQP7u4Y4xQQm/wgbtvg=
 		</data>
+		<key>flutter_assets/assets/images/.DS_Store</key>
+		<data>
+		3y++sUAKzaCQmjLBz2v0kvESHgc=
+		</data>
 		<key>flutter_assets/assets/images/SoundSketch.png</key>
 		<data>
 		YVMHST2PEXpyBjbK+p8AnvQnGyI=
+		</data>
+		<key>flutter_assets/assets/images/SpamWise.png</key>
+		<data>
+		b9/ar/e7/ivKHoYZ0g2ysfziNuU=
 		</data>
 		<key>flutter_assets/assets/images/ai_fit.png</key>
 		<data>
@@ -55,6 +67,14 @@
 		<key>flutter_assets/assets/images/robot.png</key>
 		<data>
 		3HYp+8CNvGRPIy81W9FB1vEGPHs=
+		</data>
+		<key>flutter_assets/assets/images/spam_logo.png</key>
+		<data>
+		o3FDl14V89ouQ4oKI/AJ095n5Zg=
+		</data>
+		<key>flutter_assets/assets/images/spamwise_logo.png</key>
+		<data>
+		4H+LZGxj2KwEK2y+zH4/u1Ec/Xw=
 		</data>
 		<key>flutter_assets/assets/images/speaker.png</key>
 		<data>
@@ -78,7 +98,7 @@
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		DD/WKpTVxT4bt0DQY6B7TDoTDQE=
+		COVv1xr2tmlkJvTH/vlnVXjIREA=
 		</data>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -107,21 +127,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			qOgqgwjca4EGpr+7/IlOc2o8XsQO61H+POfCnDOeBJw=
+			zRr8di8zrHkkOU3zgDpjWXNlntu4ZSMnXyiMuTfsGxw=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			GfJtqakfv/BQS2ovM8ohHdpZVttcpPjsR5jBxXbB7xM=
+			6e7aPgqlg39uFFSEm+uYuhBTAxRGeTGlkjRYexs2hNA=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			u79GzQiAVrbwCVmLybvGzQupQoDJSsL+cZTpRRBQgA4=
+			a2cudhjXvjcas2fo1apLko8wYu6zOfrWFDhFo9d/Has=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -135,7 +155,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			7h4d8DC4xHT+Z6GrrIa3N2T9ct7XFOc57dt+TT4NQlk=
+			C0hM5LhFsGdeY9SgI3pk5fW6gIZotqO0sHDRFymHyJw=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/contacts.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			7kdvnChX71dGxjN7k2vaW5+d9yrO501cznPFvgKbpcI=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/images.json</key>
@@ -150,6 +177,13 @@
 			<key>hash2</key>
 			<data>
 			ZnXA+ThNEVyx1tIFFdGzQNVHx3AR4WB2OWzelQu9YEc=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/images/SpamWise.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			1yrK3ruUYi896vZDSx7b7kzHdJHM6VlrNrh6mxy7q1Y=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/images/ai_fit.png</key>
@@ -185,6 +219,20 @@
 			<key>hash2</key>
 			<data>
 			dTgAACISO4tdJZUbc1s9sX/kvyq63GKOydQ4yaTtHYk=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/images/spam_logo.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			hF+wMH3z3S+MSEngW7u7Sp1SGrwIwyEWANijSNYD+64=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/images/spamwise_logo.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			z/7UzxU4njn8heKSlVkiPjBaCrToF0wnKqPyifCwoDE=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/images/speaker.png</key>
@@ -226,7 +274,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			k1/j6YM1SzlRmIKlAwTG1L1V8cv+qA6bLmu7GT0jT9M=
+			nnsqzktoxkECdTZ1OXyBVSbsvTHNRqKM00G6gHwYFX0=
 			</data>
 		</dict>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>

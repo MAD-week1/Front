@@ -32,6 +32,14 @@
 		<data>
 		/hQKoqT7ra03ZLV08gUcJD633qA=
 		</data>
+		<key>Headers/FLTCameraPermissionManager.h</key>
+		<data>
+		olnPb1iPX2bHnglW/pOwR18HEig=
+		</data>
+		<key>Headers/FLTPermissionServicing.h</key>
+		<data>
+		Xor60oiVMbdCkjaesXsjmgCVCLQ=
+		</data>
 		<key>Headers/FLTSavePhotoDelegate.h</key>
 		<data>
 		4K02d/P8OgweYt88zJ7wZc5RHOA=
@@ -62,7 +70,7 @@
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		J+3LjGHW8sBp+j3WW4oQ93GhBms=
+		JxOVSfZn85cSGFre7gmXyoEcmb8=
 		</data>
 		<key>camera_avfoundation_privacy.bundle/Info.plist</key>
 		<data>
@@ -124,6 +132,20 @@
 			c8FKVrP7hO+3iZltVhTFd9KE321AfjGKc0BMu+bs7qU=
 			</data>
 		</dict>
+		<key>Headers/FLTCameraPermissionManager.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			a6dp+5Zm/PDEsFij8FEDgPccY/BZ+Mqp69aXFskH0i4=
+			</data>
+		</dict>
+		<key>Headers/FLTPermissionServicing.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			mYRELUDpEkLGyKIT+72OXLfA6r+2TeU2ficFODazf/8=
+			</data>
+		</dict>
 		<key>Headers/FLTSavePhotoDelegate.h</key>
 		<dict>
 			<key>hash2</key>
@@ -170,7 +192,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Sw4B5vQDdQbwPNU2k69TyzgrgK/S8ZgB1/LyGozoNuI=
+			oCyPJg/zm0bvT9WO6ORdOx+Gg/z1WqUv1rnZM/9fQKg=
 			</data>
 		</dict>
 		<key>camera_avfoundation_privacy.bundle/Info.plist</key>
