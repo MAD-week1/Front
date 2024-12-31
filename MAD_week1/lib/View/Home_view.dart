@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 import '../ViewModel/Home_view_model.dart';
 import '../View/image_view.dart';
 import '../View/message_view.dart'; // CommentPage import
@@ -73,61 +74,82 @@ class HomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 갤러리 섹션
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GalleryPage()),
-                      );
-                    },
-                    child: Text(
-                      '갤러리',
-                      style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => GalleryPage()),
+                          );
+                        },
+                        child: Text(
+                          '갤러리',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.arrow_forward),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => GalleryPage()),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GalleryPage()),
+                  SizedBox(height: 8),
+                  Builder(
+                    builder: (context) {
+                      if (viewModel.galleryImages.isEmpty) {
+                        // 갤러리에 사진이 없을 경우
+                        return Center(
+                          child: Text(
+                            '갤러리에 사진이 없습니다.',
+                            style: TextStyle(color: Colors.grey, fontSize: 14),
+                          ),
+                        );
+                      }
+
+                      // 갤러리에 사진이 있을 경우 최대 3개 표시
+                      final previewImages = viewModel.galleryImages.take(3).toList();
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: List.generate(
+                          previewImages.length,
+                              (index) {
+                            final image = previewImages[index];
+                            final isLocal = image.imageUrl.startsWith('/'); // 로컬 이미지인지 확인
+                            return Container(
+                              width: 80,
+                              height: 80,
+                              margin: EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.grey[500]!,
+                                  width: 2,
+                                ),
+                                image: DecorationImage(
+                                  image: isLocal
+                                      ? FileImage(File(image.imageUrl)) // 로컬 이미지 처리
+                                      : NetworkImage(image.imageUrl), // 네트워크 이미지 처리
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       );
                     },
                   ),
                 ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(
-                  viewModel.galleryImages.length,
-                      (index) {
-                    final image = viewModel.galleryImages[index];
-                    return Container(
-                      width: 80,
-                      height: 80,
-                      margin: EdgeInsets.only(right: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: Colors.grey[500]!,
-                          width: 2,
-                        ),
-                        image: DecorationImage(
-                          image: NetworkImage(image.imageUrl), // GalleryImage 객체의 path 속성
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                ),
               ),
               SizedBox(height: 24),
 
@@ -140,25 +162,20 @@ class HomeView extends StatelessWidget {
                     children: [
                       Text(
                         '연락처',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       IconButton(
                         icon: Icon(Icons.arrow_forward),
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ContactView()), // 연락처 페이지로 이동
+                            MaterialPageRoute(builder: (context) => ContactView()), // 연락처 페이지로 이동
                           );
                         },
                       ),
                     ],
                   ),
                   SizedBox(height: 8),
-
-                  // 연락처 미리보기 (2개 이상일 때만 표시)
                   if (previewContacts.isNotEmpty)
                     GridView.builder(
                       shrinkWrap: true,
@@ -176,9 +193,7 @@ class HomeView extends StatelessWidget {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => ContactView(), // 연락처 탭으로 이동
-                              ),
+                              MaterialPageRoute(builder: (context) => ContactView()),
                             );
                           },
                           child: Card(
@@ -193,15 +208,12 @@ class HomeView extends StatelessWidget {
                                 children: [
                                   Text(
                                     contact.name,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 4),
                                   Text(
                                     contact.phone,
-                                    style: TextStyle(
-                                        fontSize: 12, color: Colors.grey[700]),
+                                    style: TextStyle(fontSize: 12, color: Colors.grey[700]),
                                   ),
                                 ],
                               ),
@@ -212,7 +224,6 @@ class HomeView extends StatelessWidget {
                     ),
                 ],
               ),
-
               SizedBox(height: 24),
 
               // 스팸 필터 섹션
@@ -259,7 +270,7 @@ class HomeView extends StatelessWidget {
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey[300]!, width: 1.0), // 경계선 추가
+            top: BorderSide(color: Colors.grey[300]!, width: 1.0),
           ),
         ),
         child: BottomNavigationBar(
@@ -267,12 +278,35 @@ class HomeView extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: '디스커버'),
-            BottomNavigationBarItem(icon: Icon(Icons.report), label: '리포트'),
-            BottomNavigationBarItem(icon: Icon(Icons.menu), label: '메뉴'),
+            BottomNavigationBarItem(icon: Icon(Icons.photo), label: '갤러리'),
+            BottomNavigationBarItem(icon: Icon(Icons.phone), label: '연락처'),
+            BottomNavigationBarItem(icon: Icon(Icons.warning), label: '스팸 확인'),
           ],
           currentIndex: 0,
-          onTap: (index) {},
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GalleryPage()),
+                );
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContactView()),
+                );
+                break;
+              case 3:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SpamFilterPage()),
+                );
+                break;
+            }
+          },
         ),
       ),
       backgroundColor: Colors.white,

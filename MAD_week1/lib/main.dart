@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         }),
         ChangeNotifierProvider(create: (context) {
           final galleryViewModel = GalleryViewModel();
-          galleryViewModel.loadGalleryData(); // 갤러리 데이터 로드
+          galleryViewModel.initializeGallery(); // 갤러리 데이터 로드
           return galleryViewModel;
         }),
         ChangeNotifierProvider(create: (_) {
