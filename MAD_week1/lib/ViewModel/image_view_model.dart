@@ -71,26 +71,22 @@ class GalleryViewModel extends ChangeNotifier {
     final jsonFilePath = '${directory.path}/images.json';
 
     try {
-      // 파일 복사
       final fileName = filePath.split('/').last;
       final destinationPath = '$localImagesPath/$fileName';
       final destinationFile = File(destinationPath);
       await File(filePath).copy(destinationFile.path);
 
-      // 이미지 추가
       final newImage = GalleryImage(
         id: galleryImages.length + 1,
         imageUrl: destinationFile.path,
       );
       galleryImages.add(newImage);
-
-      // JSON 파일 업데이트
       await saveToJson(jsonFilePath);
     } catch (error) {
       debugPrint('Error adding image: $error');
     }
 
-    notifyListeners();
+    notifyListeners(); // 상태 변화 알림
   }
 
   Future<void> deleteImages(List<int> ids) async {
@@ -101,24 +97,18 @@ class GalleryViewModel extends ChangeNotifier {
       for (var id in ids) {
         final imageToDelete = galleryImages.firstWhere((image) => image.id == id);
         final fileToDelete = File(imageToDelete.imageUrl);
-
-        // 로컬 파일 삭제
         if (await fileToDelete.exists()) {
           await fileToDelete.delete();
         }
-
-        // 이미지 리스트에서 삭제
         galleryImages.removeWhere((image) => image.id == id);
       }
-
-      // JSON 파일 업데이트
       await saveToJson(jsonFilePath);
+      notifyListeners(); // 상태 변화 알림
     } catch (error) {
       debugPrint('Error deleting images: $error');
     }
-
-    notifyListeners();
   }
+
 
 
   Future<void> saveToJson(String jsonFilePath) async {

@@ -4,7 +4,8 @@ import 'dart:io';
 import '../ViewModel/Home_view_model.dart';
 import '../View/image_view.dart';
 import '../View/message_view.dart'; // CommentPage import
-import '../View/phone_view.dart'; // ContactPage import 추가
+import '../View/phone_view.dart';
+import '../ViewModel/image_view_model.dart'; // ContactPage import 추가
 
 class HomeView extends StatelessWidget {
   @override
@@ -104,10 +105,11 @@ class HomeView extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8),
-                  Builder(
-                    builder: (context) {
-                      if (viewModel.galleryImages.isEmpty) {
-                        // 갤러리에 사진이 없을 경우
+                  Consumer<GalleryViewModel>(
+                    builder: (context, galleryViewModel, child) {
+                      final previewImages = galleryViewModel.galleryImages.take(3).toList();
+
+                      if (galleryViewModel.galleryImages.isEmpty) {
                         return Center(
                           child: Text(
                             '갤러리에 사진이 없습니다.',
@@ -116,30 +118,25 @@ class HomeView extends StatelessWidget {
                         );
                       }
 
-                      // 갤러리에 사진이 있을 경우 최대 3개 표시
-                      final previewImages = viewModel.galleryImages.take(3).toList();
                       return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
                           previewImages.length,
                               (index) {
                             final image = previewImages[index];
-                            final isLocal = image.imageUrl.startsWith('/'); // 로컬 이미지인지 확인
+                            final isLocal = image.imageUrl.startsWith('/');
                             return Container(
                               width: 80,
                               height: 80,
-                              margin: EdgeInsets.only(right: 8),
+                              margin: EdgeInsets.symmetric(horizontal: 8),
                               decoration: BoxDecoration(
                                 color: Colors.grey[300],
                                 borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: Colors.grey[500]!,
-                                  width: 2,
-                                ),
+                                border: Border.all(color: Colors.grey[500]!, width: 2),
                                 image: DecorationImage(
                                   image: isLocal
-                                      ? FileImage(File(image.imageUrl)) // 로컬 이미지 처리
-                                      : NetworkImage(image.imageUrl), // 네트워크 이미지 처리
+                                      ? FileImage(File(image.imageUrl))
+                                      : NetworkImage(image.imageUrl),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -149,6 +146,7 @@ class HomeView extends StatelessWidget {
                       );
                     },
                   ),
+
                 ],
               ),
               SizedBox(height: 24),
