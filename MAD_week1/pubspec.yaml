@@ -81,7 +81,11 @@ flutter:
   assets:
     - assets/images/
     - .env
+
     - assets/contacts.json
+
+    - assets/images.json
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

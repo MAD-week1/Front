@@ -14,7 +14,7 @@ class HomeView extends StatelessWidget {
       // 데이터가 로드 중인 경우
       return Scaffold(
         appBar: AppBar(
-          title: Text('qwer'),
+          title: Text('MAD_Week_1'),
         ),
         body: Center(
           child: CircularProgressIndicator(), // 로딩 중 표시
@@ -36,9 +36,9 @@ class HomeView extends StatelessWidget {
         title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'qwer',
-            style: TextStyle(
-                color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+
+            'MAD_Week_1',
+            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
         centerTitle: false,
@@ -105,7 +105,7 @@ class HomeView extends StatelessWidget {
                           width: 2,
                         ),
                         image: DecorationImage(
-                          image: AssetImage(image.path), // GalleryImage 객체의 path 속성
+                          image: NetworkImage(image.imageUrl), // GalleryImage 객체의 path 속성
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -242,17 +242,24 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: '디스커버'),
-          BottomNavigationBarItem(icon: Icon(Icons.report), label: '리포트'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu), label: '메뉴'),
-        ],
-        currentIndex: 0,
-        onTap: (index) {},
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Colors.grey[300]!, width: 1.0), // 경계선 추가
+          ),
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: '디스커버'),
+            BottomNavigationBarItem(icon: Icon(Icons.report), label: '리포트'),
+            BottomNavigationBarItem(icon: Icon(Icons.menu), label: '메뉴'),
+          ],
+          currentIndex: 0,
+          onTap: (index) {},
+        ),
       ),
       backgroundColor: Colors.white,
     );
