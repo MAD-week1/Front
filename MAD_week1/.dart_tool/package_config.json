@@ -2,6 +2,18 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "_discoveryapis_commons",
+      "rootUri": "file:///C:/Users/mensa/AppData/Local/Pub/Cache/hosted/pub.dev/_discoveryapis_commons-1.0.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "args",
+      "rootUri": "file:///C:/Users/mensa/AppData/Local/Pub/Cache/hosted/pub.dev/args-2.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "async",
       "rootUri": "file:///C:/Users/mensa/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.11.0",
       "packageUri": "lib/",
@@ -254,6 +266,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "google_generative_ai",
+      "rootUri": "file:///C:/Users/mensa/AppData/Local/Pub/Cache/hosted/pub.dev/google_generative_ai-0.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "google_identity_services_web",
       "rootUri": "file:///C:/Users/mensa/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.3",
       "packageUri": "lib/",
@@ -288,6 +306,18 @@
       "rootUri": "file:///C:/Users/mensa/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.4+3",
       "packageUri": "lib/",
       "languageVersion": "3.3"
+    },
+    {
+      "name": "googleapis",
+      "rootUri": "file:///C:/Users/mensa/AppData/Local/Pub/Cache/hosted/pub.dev/googleapis-12.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "googleapis_auth",
+      "rootUri": "file:///C:/Users/mensa/AppData/Local/Pub/Cache/hosted/pub.dev/googleapis_auth-1.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
     },
     {
       "name": "http",
@@ -656,7 +686,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-12-29T11:33:11.401981Z",
+  "generated": "2024-12-31T01:49:37.914228Z",
   "generator": "pub",
   "generatorVersion": "3.6.0",
   "flutterRoot": "file:///C:/Users/mensa/flutter",

@@ -2,12 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../ViewModel/message_view_model.dart';
 
-class CommentPage extends StatelessWidget {
+class CommentPage extends StatefulWidget {
+  @override
+  _CommentPageState createState() => _CommentPageState();
+}
+
+class _CommentPageState extends State<CommentPage> {
+  late TextEditingController _commentController;
+
+  @override
+  void initState() {
+    super.initState();
+    _commentController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose(); // 컨트롤러 해제
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final commentViewModel = Provider.of<CommentViewModel>(context);
-
-    TextEditingController _commentController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -21,6 +38,14 @@ class CommentPage extends StatelessWidget {
           Expanded(
             child: Consumer<CommentViewModel>(
               builder: (context, viewModel, child) {
+                if (viewModel.comments.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "등록된 댓글이 없습니다.",
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  );
+                }
                 return ListView.builder(
                   padding: const EdgeInsets.all(16.0),
                   itemCount: viewModel.comments.length,
@@ -55,7 +80,7 @@ class CommentPage extends StatelessWidget {
                   child: TextField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                      hintText: 'Message...',
+                      hintText: '메시지를 입력하세요...',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -65,11 +90,30 @@ class CommentPage extends StatelessWidget {
                 ),
                 SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final newComment = _commentController.text.trim();
                     if (newComment.isNotEmpty) {
-                      commentViewModel.addComment(newComment, "임진석"); // '임진석'으로 댓글 추가
-                      _commentController.clear(); // 입력창 초기화
+                      final result = await commentViewModel.addComment(newComment, "임진석");
+                      if (!result) {
+                        // 스팸 메시지일 경우 경고 팝업 표시
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("경고"),
+                            content: Text("스팸 메시지가 감지되었습니다."),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("확인"),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        _commentController.clear(); // 입력창 초기화
+                      }
                     }
                   },
                   child: Text('전송'),
