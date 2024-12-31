@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) {
           final contactViewModel = ContactViewModel();
-          contactViewModel.loadContactData(); // 연락처 데이터 로드
+          contactViewModel.loadContactData(context); // 연락처 데이터 로드
           return contactViewModel;
         }),
         ChangeNotifierProvider(create: (context) {

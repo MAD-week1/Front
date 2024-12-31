@@ -10,6 +10,12 @@ class Contact {
       phone: json['phone'],
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'phone': phone,
+    };
+  }
 }
 
 class BoardPost {
