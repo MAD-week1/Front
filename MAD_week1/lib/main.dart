@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
             model: 'gemini-1.5-flash',
             apiKey: apiKey,
           );
-          return CommentViewModel(model);
+          return SpamFilterViewModel(model);
         }),
 
         // HomeViewModel에 phoneViewModel과 imageViewModel 전달
@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => SplashScreen(),
           '/gallery': (context) => GalleryPage(),
-          '/comment': (context) => CommentPage(),
+          '/comment': (context) => SpamFilterPage(),
           '/contact': (context) => ContactView(),
         },
       ),

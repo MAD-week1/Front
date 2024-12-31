@@ -15,7 +15,7 @@ class HomeView extends StatelessWidget {
       // 데이터가 로드 중인 경우
       return Scaffold(
         appBar: AppBar(
-          title: Text('MAD_Week_1'),
+          title: Text('SpamWise'),
         ),
         body: Center(
           child: CircularProgressIndicator(), // 로딩 중 표시
@@ -30,16 +30,33 @@ class HomeView extends StatelessWidget {
         ? viewModel.contacts.take(2).toList() // 2개 이상일 때 2개만 가져옴
         : []; // 2개 미만일 경우 빈 리스트
 
+    // 스팸 필터 미리보기 데이터 결정
+    final previewSpamMessages = viewModel.spamMessages.length >= 3
+        ? viewModel.spamMessages.take(3).toList()
+        : []; // 3개 미만일 경우 빈 리스트
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'MAD_Week_1',
-            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/spam_logo.png',
+              height: 40,
+              width: 40,
+            ),
+            SizedBox(width: 8), // 간격 추가
+            Text(
+              'SpamWise',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
         ),
         centerTitle: false,
         bottom: PreferredSize(
@@ -206,41 +223,46 @@ class HomeView extends StatelessWidget {
                       },
                     ),
                 ],
-              ),
+              ),=
               SizedBox(height: 24),
 
-              // 게시판 섹션
+              // 스팸 필터 섹션
               GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CommentPage()),
+                    MaterialPageRoute(builder: (context) => SpamFilterPage()),
                   );
                 },
-                child: Text(
-                  '스팸 확인',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(height: 8),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CommentPage()),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Center(
-                    child: Text(
-                      '연락처를 공유한 사람들과 대화를 나누세요',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
-                      textAlign: TextAlign.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '스팸 필터',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                  ),
+                    SizedBox(height: 8),
+                    if (previewSpamMessages.isNotEmpty)
+                      Column(
+                        children: previewSpamMessages.map((message) => Text(
+                          message,
+                          style: TextStyle(fontSize: 14, color: Colors.red),
+                        )).toList(),
+                      )
+                    else
+                      Text(
+                        '나의 문자가 스팸이 될 가능성을 확인하세요',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                  ],
                 ),
               ),
+
+              SizedBox(height: 24),
             ],
           ),
         ),
@@ -291,3 +313,4 @@ class HomeView extends StatelessWidget {
     );
   }
 }
+

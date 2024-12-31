@@ -8,6 +8,7 @@ class HomeViewModel extends ChangeNotifier {
   List<Contact> contacts = [];
   List<BoardPost> boardPosts = [];
   List<GalleryImage> galleryImages = [];
+  List<String> spamMessages = []; // 스팸 메시지 저장
 
   final ContactViewModel phoneViewModel;
   final GalleryViewModel imageViewModel;
@@ -17,6 +18,21 @@ class HomeViewModel extends ChangeNotifier {
       !phoneViewModel.isLoading && !imageViewModel.isLoading;
 
   HomeViewModel({required this.phoneViewModel, required this.imageViewModel});
+
+  void loadSpamDataFromServer(List<String> serverSpamMessages) {
+    spamMessages = serverSpamMessages;
+    print("Spam messages loaded: \$spamMessages");
+    notifyListeners();
+  }
+
+  List<String> get topSpamMessages {
+    if (spamMessages.isEmpty) {
+      print("No spam messages available.");
+    } else {
+      print("Top spam messages: \${spamMessages.take(3).toList()}");
+    }
+    return spamMessages.isNotEmpty ? spamMessages.take(3).toList() : [];
+  }
 
   void loadSampleData() {
     print("Loading sample data...");
@@ -37,7 +53,7 @@ class HomeViewModel extends ChangeNotifier {
       BoardPost(content: 'ㅎㅎㅎ', likes: 6, comments: 18),
     ];
 
-    print("Gallery Images: ${galleryImages.length}, Contacts: ${contacts.length}");
+    print("Gallery Images: \${galleryImages.length}, Contacts: \${contacts.length}");
 
     notifyListeners();
   }

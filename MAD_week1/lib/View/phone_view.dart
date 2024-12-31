@@ -23,6 +23,7 @@ class _ContactViewState extends State<ContactView> {
         .toList();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
