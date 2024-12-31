@@ -86,6 +86,7 @@ class _ContactViewState extends State<ContactView> {
           ),
         ],
       ),
+      backgroundColor: Colors.white,
     );
   }
 }

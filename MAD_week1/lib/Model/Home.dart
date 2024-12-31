@@ -28,16 +28,3 @@ class BoardPost {
   }
 }
 
-class GalleryImage {
-  final String title;
-  final String path;
-
-  GalleryImage({required this.title, required this.path});
-
-  factory GalleryImage.fromJson(Map<String, dynamic> json) {
-    return GalleryImage(
-      title: json['title'],
-      path: json['path'],
-    );
-  }
-}

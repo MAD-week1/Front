@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../Model/Home.dart';
+import '../Model/image.dart';
 import '../ViewModel/image_view_model.dart';
 import '../ViewModel/phone_view_model.dart';
 
