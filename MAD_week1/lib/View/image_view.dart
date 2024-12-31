@@ -140,8 +140,8 @@ class _GalleryPageState extends State<GalleryPage> {
                             ),
                             if (isSelecting)
                               Positioned(
-                                top: 8,
-                                left: 8,
+                                top: 0, // 완전 상단
+                                left: 0, // 완전 좌측
                                 child: Checkbox(
                                   value: isSelected,
                                   onChanged: (bool? value) {
@@ -153,6 +153,12 @@ class _GalleryPageState extends State<GalleryPage> {
                                       }
                                     });
                                   },
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // 체크박스 크기 축소
+                                  visualDensity: VisualDensity.compact, // 시각적으로 밀집되게
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(2), // 둥근 모서리
+                                  ),
+                                  side: BorderSide(color: Colors.white, width: 1.5), // 테두리 설정
                                 ),
                               ),
                           ],

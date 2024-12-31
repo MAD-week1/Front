@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import '../ViewModel/Home_view_model.dart';
+import '../ViewModel/image_view_model.dart'; // GalleryViewModel 추가
 import '../View/image_view.dart';
 import '../View/message_view.dart'; // CommentPage import
 import '../View/phone_view.dart'; // ContactPage import 추가
@@ -9,9 +10,9 @@ import '../View/phone_view.dart'; // ContactPage import 추가
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<HomeViewModel>(context);
+    final homeViewModel = Provider.of<HomeViewModel>(context);
 
-    if (!viewModel.isDataLoaded) {
+    if (!homeViewModel.isDataLoaded) {
       // 데이터가 로드 중인 경우
       return Scaffold(
         appBar: AppBar(
@@ -24,16 +25,16 @@ class HomeView extends StatelessWidget {
     }
 
     // 연락처 미리보기 데이터 결정
-    final previewContacts = viewModel.contacts.length >= 4
-        ? viewModel.contacts.take(4).toList() // 4개 이상일 때 4개만 가져옴
-        : viewModel.contacts.length >= 2
-        ? viewModel.contacts.take(2).toList() // 2개 이상일 때 2개만 가져옴
-        : []; // 2개 미만일 경우 빈 리스트
+    final previewContacts = homeViewModel.contacts.length >= 4
+        ? homeViewModel.contacts.take(4).toList()
+        : homeViewModel.contacts.length >= 2
+        ? homeViewModel.contacts.take(2).toList()
+        : [];
 
     // 스팸 필터 미리보기 데이터 결정
-    final previewSpamMessages = viewModel.spamMessages.length >= 3
-        ? viewModel.spamMessages.take(3).toList()
-        : []; // 3개 미만일 경우 빈 리스트
+    final previewSpamMessages = homeViewModel.spamMessages.length >= 3
+        ? homeViewModel.spamMessages.take(3).toList()
+        : [];
 
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +47,7 @@ class HomeView extends StatelessWidget {
               height: 40,
               width: 40,
             ),
-            SizedBox(width: 8), // 간격 추가
+            SizedBox(width: 8),
             Text(
               'SpamWise',
               style: TextStyle(
@@ -104,9 +105,12 @@ class HomeView extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8),
-                  Builder(
-                    builder: (context) {
-                      if (viewModel.galleryImages.isEmpty) {
+                  Consumer<GalleryViewModel>(
+                    builder: (context, galleryViewModel, child) {
+                      // 갤러리에 사진이 있을 경우 최대 3개 표시
+                      final previewImages = galleryViewModel.galleryImages.take(3).toList();
+                      print("현재 미리보기 이미지 개수: ${previewImages.length}");
+                      if (galleryViewModel.galleryImages.isEmpty) {
                         // 갤러리에 사진이 없을 경우
                         return Center(
                           child: Text(
@@ -116,19 +120,18 @@ class HomeView extends StatelessWidget {
                         );
                       }
 
-                      // 갤러리에 사진이 있을 경우 최대 3개 표시
-                      final previewImages = viewModel.galleryImages.take(3).toList();
+
                       return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
                           previewImages.length,
                               (index) {
                             final image = previewImages[index];
-                            final isLocal = image.imageUrl.startsWith('/'); // 로컬 이미지인지 확인
+                            final isLocal = image.imageUrl.startsWith('/');
                             return Container(
                               width: 80,
                               height: 80,
-                              margin: EdgeInsets.only(right: 8),
+                              margin: EdgeInsets.symmetric(horizontal: 8),
                               decoration: BoxDecoration(
                                 color: Colors.grey[300],
                                 borderRadius: BorderRadius.circular(8),
@@ -169,7 +172,7 @@ class HomeView extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ContactView()), // 연락처 페이지로 이동
+                            MaterialPageRoute(builder: (context) => ContactView()),
                           );
                         },
                       ),
@@ -223,9 +226,8 @@ class HomeView extends StatelessWidget {
                       },
                     ),
                 ],
-              ),=
+              ),
               SizedBox(height: 24),
-
               // 스팸 필터 섹션
               GestureDetector(
                 onTap: () {
@@ -302,7 +304,7 @@ class HomeView extends StatelessWidget {
               case 3:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CommentPage()),
+                  MaterialPageRoute(builder: (context) => SpamFilterPage()),
                 );
                 break;
             }
@@ -313,4 +315,3 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-

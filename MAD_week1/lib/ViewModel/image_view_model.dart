@@ -43,7 +43,15 @@ class GalleryViewModel extends ChangeNotifier {
       if (await File(jsonFilePath).exists()) {
         final jsonString = await File(jsonFilePath).readAsString();
         final List<dynamic> jsonData = jsonDecode(jsonString);
+
+        // 기존 JSON 데이터를 갤러리 이미지 리스트로 초기화
         galleryImages = jsonData.map((item) => GalleryImage.fromJson(item)).toList();
+
+        // 삭제된 로컬 파일 정리 (JSON에는 있지만 파일이 없는 경우)
+        galleryImages = galleryImages
+            .where((image) => File(image.imageUrl).existsSync())
+            .toList();
+        await saveToJson(jsonFilePath);
       } else {
         // JSON 파일이 없으면 초기화
         final initialImages = localDir
@@ -98,6 +106,7 @@ class GalleryViewModel extends ChangeNotifier {
     final jsonFilePath = '${directory.path}/images.json';
 
     try {
+      debugPrint('삭제 전 갤러리 이미지 수: ${galleryImages.length}');
       for (var id in ids) {
         final imageToDelete = galleryImages.firstWhere((image) => image.id == id);
         final fileToDelete = File(imageToDelete.imageUrl);
@@ -113,11 +122,15 @@ class GalleryViewModel extends ChangeNotifier {
 
       // JSON 파일 업데이트
       await saveToJson(jsonFilePath);
+
+      // 강제로 리스트 참조를 변경
+      galleryImages = List.from(galleryImages);
+      notifyListeners(); // 상태 변화 알림
     } catch (error) {
       debugPrint('Error deleting images: $error');
     }
 
-    notifyListeners();
+    debugPrint('삭제 후 갤러리 이미지 수: ${galleryImages.length}');
   }
 
 
@@ -125,6 +138,7 @@ class GalleryViewModel extends ChangeNotifier {
     final jsonList = galleryImages.map((image) => image.toJson()).toList();
     final jsonString = jsonEncode(jsonList);
     await File(jsonFilePath).writeAsString(jsonString);
+    notifyListeners();
   }
 }
 
