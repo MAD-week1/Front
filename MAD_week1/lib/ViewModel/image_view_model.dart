@@ -9,6 +9,12 @@ class GalleryViewModel extends ChangeNotifier {
   List<GalleryImage> galleryImages = [];
   bool isLoading = true;
 
+  /// 고유 ID를 생성하는 함수
+  int _generateUniqueId() {
+    // microsecondsSinceEpoch 사용 (중복 가능성 매우 낮음)
+    return DateTime.now().microsecondsSinceEpoch;
+  }
+
   Future<void> initializeGallery() async {
     isLoading = true;
     notifyListeners();
@@ -46,7 +52,9 @@ class GalleryViewModel extends ChangeNotifier {
         final List<dynamic> jsonData = jsonDecode(jsonString);
 
         // 기존 JSON 데이터를 갤러리 이미지 리스트로 초기화
-        galleryImages = jsonData.map((item) => GalleryImage.fromJson(item)).toList();
+        galleryImages = jsonData
+            .map((item) => GalleryImage.fromJson(item))
+            .toList();
 
         // 삭제된 로컬 파일 정리 (JSON에는 있지만 파일이 없는 경우)
         galleryImages = galleryImages
@@ -59,7 +67,8 @@ class GalleryViewModel extends ChangeNotifier {
             .listSync()
             .whereType<File>()
             .map((file) => GalleryImage(
-          id: galleryImages.length + 1,
+          // 수정: length + 1 대신 고유 ID 생성
+          id: _generateUniqueId(),
           imageUrl: file.path,
         ))
             .toList();
@@ -90,7 +99,8 @@ class GalleryViewModel extends ChangeNotifier {
       debugPrint('파일 복사 완료: $destinationPath');
 
       final newImage = GalleryImage(
-        id: galleryImages.length + 1,
+        // 수정: length + 1 대신 고유 ID 생성
+        id: _generateUniqueId(),
         imageUrl: destinationFile.path,
       );
       galleryImages.add(newImage);
@@ -108,7 +118,6 @@ class GalleryViewModel extends ChangeNotifier {
       debugPrint('Error adding image: $error');
     }
   }
-
 
   Future<void> deleteImages(List<int> ids) async {
     final directory = await getApplicationDocumentsDirectory();
@@ -128,16 +137,13 @@ class GalleryViewModel extends ChangeNotifier {
 
       // 강제로 리스트 참조를 변경
       galleryImages = List.from(galleryImages);
-      
     } catch (error) {
       debugPrint('Error deleting images: $error');
     }
-    
+
     notifyListeners(); // 상태 변화 알림
     debugPrint('삭제 후 갤러리 이미지 수: ${galleryImages.length}');
   }
-
-
 
   Future<void> saveToJson(String jsonFilePath) async {
     final jsonList = galleryImages.map((image) => image.toJson()).toList();
@@ -146,4 +152,3 @@ class GalleryViewModel extends ChangeNotifier {
     notifyListeners();
   }
 }
-
