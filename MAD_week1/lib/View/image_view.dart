@@ -10,6 +10,7 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
+  bool isSelecting = false; // 선택 모드 활성화 여부
   Set<int> selectedImages = {}; // 선택된 이미지 ID 목록
 
   @override
@@ -184,7 +185,7 @@ class _GalleryPageState extends State<GalleryPage> {
     );
   }
 
-  Future<void> _confirmDeletion(BuildContext context) async {
+  Future<void> _confirmDeletion(BuildContext context, List<int> ids) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -193,12 +194,16 @@ class _GalleryPageState extends State<GalleryPage> {
           content: Text('선택된 이미지를 삭제하시겠습니까?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text('취소'),
+              onPressed: () {
+                Navigator.pop(context, false); // 아니오
+              },
+              child: Text('아니오'),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text('삭제'),
+              onPressed: () {
+                Navigator.pop(context, true); // 예
+              },
+              child: Text('예'),
             ),
           ],
         );
@@ -207,14 +212,14 @@ class _GalleryPageState extends State<GalleryPage> {
 
     if (result == true) {
       await Provider.of<GalleryViewModel>(context, listen: false)
-          .deleteImages(selectedImages.toList());
+          .deleteImages(ids);
       setState(() {
         selectedImages.clear();
+        isSelecting = false;
       });
     }
   }
 }
-
 
 class _ImageSourceSelector extends StatelessWidget {
   @override
@@ -242,4 +247,3 @@ class _ImageSourceSelector extends StatelessWidget {
     );
   }
 }
-
