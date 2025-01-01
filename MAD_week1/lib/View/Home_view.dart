@@ -10,7 +10,7 @@ import '../View/phone_view.dart'; // ContactPage import 추가
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final homeViewModel = Provider.of<HomeViewModel>(context);
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: true);
 
     if (!homeViewModel.isDataLoaded) {
       // 데이터가 로드 중인 경우

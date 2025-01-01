@@ -15,6 +15,8 @@ import 'ViewModel/phone_view_model.dart'; // 연락처 ViewModel 추가
 import 'ViewModel/message_view_model.dart'; // CommentViewModel 추가
 import 'package:google_generative_ai/google_generative_ai.dart'; // GenerativeModel import
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Flutter 위젯 시스템 초기화
 

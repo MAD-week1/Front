@@ -15,177 +15,173 @@ class _GalleryPageState extends State<GalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => GalleryViewModel()..initializeGallery(),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              '갤러리',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            '갤러리',
+            style: TextStyle(
+                color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          centerTitle: false,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(1.0),
-            child: Divider(
-              thickness: 1,
-              color: Colors.grey[300],
-            ),
+        ),
+        centerTitle: false,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Divider(
+            thickness: 1,
+            color: Colors.grey[300],
           ),
-          actions: [
-            if (!isSelecting)
-              IconButton(
-                icon: Icon(Icons.add, color: Colors.black),
-                onPressed: () async {
-                  final result = await showModalBottomSheet<ImageSource>(
-                    context: context,
-                    builder: (context) => _ImageSourceSelector(),
-                  );
-
-                  if (result != null) {
-                    final pickedFile =
-                    await ImagePicker().pickImage(source: result);
-                    if (pickedFile != null) {
-                      Provider.of<GalleryViewModel>(context, listen: false)
-                          .addImage(pickedFile.path);
-                    }
-                  }
-                },
-              ),
+        ),
+        actions: [
+          if (!isSelecting)
             IconButton(
-              icon: Icon(isSelecting ? Icons.close : Icons.select_all,
-                  color: Colors.black),
-              onPressed: () {
-                setState(() {
-                  isSelecting = !isSelecting;
-                  if (!isSelecting) selectedImages.clear(); // 선택 모드 종료 시 선택 초기화
-                });
+              icon: Icon(Icons.add, color: Colors.black),
+              onPressed: () async {
+                final result = await showModalBottomSheet<ImageSource>(
+                  context: context,
+                  builder: (context) => _ImageSourceSelector(),
+                );
+
+                if (result != null) {
+                  final pickedFile =
+                  await ImagePicker().pickImage(source: result);
+                  if (pickedFile != null) {
+                    Provider.of<GalleryViewModel>(context, listen: false)
+                        .addImage(pickedFile.path);
+                  }
+                }
               },
             ),
-          ],
-        ),
-        body: Consumer<GalleryViewModel>(
-          builder: (context, viewModel, child) {
-            if (viewModel.isLoading) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (viewModel.galleryImages.isEmpty) {
-              return Center(
-                child: Text(
-                  '갤러리에 이미지가 없습니다.',
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                ),
-              );
-            }
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                children: [
-                  GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4, // 한 줄에 4개씩 정렬
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                      childAspectRatio: 1, // 정사각형 비율 유지
-                    ),
-                    itemCount: viewModel.galleryImages.length,
-                    itemBuilder: (context, index) {
-                      final image = viewModel.galleryImages[index];
-                      final isSelected = selectedImages.contains(image.id);
-                      return GestureDetector(
-                        onTap: isSelecting
-                            ? () {
-                          setState(() {
-                            if (isSelected) {
-                              selectedImages.remove(image.id);
-                            } else {
-                              selectedImages.add(image.id);
-                            }
-                          });
-                        }
-                            : () {
-                          // 일반 모드: 원본 이미지 보기
-                          showDialog(
-                            context: context,
-                            builder: (context) => Dialog(
-                              child: Image.file(
-                                File(image.imageUrl),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: Colors.grey[500]!,
-                                  width: 2,
-                                ),
-                                image: DecorationImage(
-                                  image: FileImage(File(image.imageUrl)),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            if (isSelecting)
-                              Positioned(
-                                top: 0, // 완전 상단
-                                left: 0, // 완전 좌측
-                                child: Checkbox(
-                                  value: isSelected,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      if (value == true) {
-                                        selectedImages.add(image.id);
-                                      } else {
-                                        selectedImages.remove(image.id);
-                                      }
-                                    });
-                                  },
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // 체크박스 크기 축소
-                                  visualDensity: VisualDensity.compact, // 시각적으로 밀집되게
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(2), // 둥근 모서리
-                                  ),
-                                  side: BorderSide(color: Colors.white, width: 1.5), // 테두리 설정
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  if (isSelecting && selectedImages.isNotEmpty)
-                    Positioned(
-                      bottom: 16,
-                      left: 16,
-                      right: 16,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _confirmDeletion(context, selectedImages.toList());
-                        },
-                        child: Text(
-                            '${selectedImages.length}개의 이미지 삭제'),
-                      ),
-                    ),
-                ],
+          IconButton(
+            icon: Icon(isSelecting ? Icons.close : Icons.select_all,
+                color: Colors.black),
+            onPressed: () {
+              setState(() {
+                isSelecting = !isSelecting;
+                if (!isSelecting) selectedImages.clear(); // 선택 모드 종료 시 선택 초기화
+              });
+            },
+          ),
+        ],
+      ),
+      body: Consumer<GalleryViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.isLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (viewModel.galleryImages.isEmpty) {
+            return Center(
+              child: Text(
+                '갤러리에 이미지가 없습니다.',
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
             );
-          },
-        ),
-        backgroundColor: Colors.white,
+          }
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Stack(
+              children: [
+                GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4, // 한 줄에 4개씩 정렬
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 1, // 정사각형 비율 유지
+                  ),
+                  itemCount: viewModel.galleryImages.length,
+                  itemBuilder: (context, index) {
+                    final image = viewModel.galleryImages[index];
+                    final isSelected = selectedImages.contains(image.id);
+                    return GestureDetector(
+                      onTap: isSelecting
+                          ? () {
+                        setState(() {
+                          if (isSelected) {
+                            selectedImages.remove(image.id);
+                          } else {
+                            selectedImages.add(image.id);
+                          }
+                        });
+                      }
+                          : () {
+                        // 일반 모드: 원본 이미지 보기
+                        showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            child: Image.file(
+                              File(image.imageUrl),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.grey[500]!,
+                                width: 2,
+                              ),
+                              image: DecorationImage(
+                                image: FileImage(File(image.imageUrl)),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          if (isSelecting)
+                            Positioned(
+                              top: 0, // 완전 상단
+                              left: 0, // 완전 좌측
+                              child: Checkbox(
+                                value: isSelected,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    if (value == true) {
+                                      selectedImages.add(image.id);
+                                    } else {
+                                      selectedImages.remove(image.id);
+                                    }
+                                  });
+                                },
+                                materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap, // 체크박스 크기 축소
+                                visualDensity: VisualDensity.compact, // 시각적으로 밀집되게
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2), // 둥근 모서리
+                                ),
+                                side: BorderSide(
+                                    color: Colors.white, width: 1.5), // 테두리 설정
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                if (isSelecting && selectedImages.isNotEmpty)
+                  Positioned(
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _confirmDeletion(context, selectedImages.toList());
+                      },
+                      child: Text('${selectedImages.length}개의 이미지 삭제'),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
+      backgroundColor: Colors.white,
     );
   }
 
@@ -251,3 +247,4 @@ class _ImageSourceSelector extends StatelessWidget {
     );
   }
 }
+

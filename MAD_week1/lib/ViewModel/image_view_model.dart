@@ -18,6 +18,7 @@ class GalleryViewModel extends ChangeNotifier {
       final directory = await getApplicationDocumentsDirectory();
       final localImagesPath = '${directory.path}/images';
       final jsonFilePath = '${directory.path}/images.json';
+      print('json파일 위치: $jsonFilePath');
 
       // 로컬 디렉토리 생성
       final localDir = Directory(localImagesPath);
@@ -79,11 +80,14 @@ class GalleryViewModel extends ChangeNotifier {
     final jsonFilePath = '${directory.path}/images.json';
 
     try {
+      debugPrint('추가 전 갤러리 이미지 수: ${galleryImages.length}');
+
       // 파일 복사
       final fileName = filePath.split('/').last;
       final destinationPath = '$localImagesPath/$fileName';
       final destinationFile = File(destinationPath);
       await File(filePath).copy(destinationFile.path);
+      debugPrint('파일 복사 완료: $destinationPath');
 
       // 이미지 추가
       final newImage = GalleryImage(
@@ -91,15 +95,21 @@ class GalleryViewModel extends ChangeNotifier {
         imageUrl: destinationFile.path,
       );
       galleryImages.add(newImage);
+      debugPrint('이미지 리스트 추가 완료: ${newImage.imageUrl}');
 
       // JSON 파일 업데이트
       await saveToJson(jsonFilePath);
+      debugPrint('JSON 파일 저장 완료');
+
+      // 상태 변화 알림
+      galleryImages = List.from(galleryImages); // 참조 변경
+      notifyListeners();
+      debugPrint('갤러리 UI 갱신 완료');
     } catch (error) {
       debugPrint('Error adding image: $error');
     }
-
-    notifyListeners();
   }
+
 
   Future<void> deleteImages(List<int> ids) async {
     final directory = await getApplicationDocumentsDirectory();
@@ -125,11 +135,12 @@ class GalleryViewModel extends ChangeNotifier {
 
       // 강제로 리스트 참조를 변경
       galleryImages = List.from(galleryImages);
-      notifyListeners(); // 상태 변화 알림
+      
     } catch (error) {
       debugPrint('Error deleting images: $error');
     }
-
+    
+    notifyListeners(); // 상태 변화 알림
     debugPrint('삭제 후 갤러리 이미지 수: ${galleryImages.length}');
   }
 
