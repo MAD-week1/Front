@@ -24,5 +24,12 @@
 ## 사용 기술
 - ### Flutter / Dart, Android Studio
 
+## 앱 화면
+<div style="display: flex; justify-content: center; gap: 100px;">
+  <img src="https://github.com/user-attachments/assets/1e9ec0b6-cc22-4bfb-859f-1a1cf44a4bb3" alt="Screenshot 1" width="200">
+  <img src="https://github.com/user-attachments/assets/086771aa-3aa7-40df-a07c-0709498bffec" alt="Screenshot 2" width="200">
+  <img src="https://github.com/user-attachments/assets/48ba2f45-9e64-4747-bec7-3520635b3fc6" alt="Screenshot 3" width="200">
+</div>
+
 ## APK 파일
 [APK 파일 다운받기](https://drive.google.com/drive/folders/1vIYd4qSwgPL_lZv9gIwNjwyPqokzRK0q?usp=sharing)
