@@ -11,6 +11,7 @@ class GalleryPage extends StatefulWidget {
 
 class _GalleryPageState extends State<GalleryPage> {
   Set<int> selectedImages = {}; // 선택된 이미지 ID 목록
+  bool isSelecting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +185,7 @@ class _GalleryPageState extends State<GalleryPage> {
     );
   }
 
-  Future<void> _confirmDeletion(BuildContext context) async {
+  Future<void> _confirmDeletion(BuildContext context, List<int> imageIds) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -207,14 +208,13 @@ class _GalleryPageState extends State<GalleryPage> {
 
     if (result == true) {
       await Provider.of<GalleryViewModel>(context, listen: false)
-          .deleteImages(selectedImages.toList());
+          .deleteImages(imageIds); // 선택된 이미지 삭제
       setState(() {
-        selectedImages.clear();
+        selectedImages.clear(); // 선택 초기화
       });
     }
   }
 }
-
 
 class _ImageSourceSelector extends StatelessWidget {
   @override
@@ -242,4 +242,3 @@ class _ImageSourceSelector extends StatelessWidget {
     );
   }
 }
-
