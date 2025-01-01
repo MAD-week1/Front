@@ -23,3 +23,6 @@
 
 ## 사용 기술
 - ### Flutter / Dart, Android Studio
+
+## APK 파일
+[APK 파일 다운받기](https://drive.google.com/drive/folders/1vIYd4qSwgPL_lZv9gIwNjwyPqokzRK0q?usp=sharing)
