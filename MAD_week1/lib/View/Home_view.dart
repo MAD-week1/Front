@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 import '../ViewModel/Home_view_model.dart';
+import '../ViewModel/image_view_model.dart'; // GalleryViewModel 추가
 import '../View/image_view.dart';
 import '../View/message_view.dart'; // CommentPage import
-import '../View/phone_view.dart'; // ContactPage import 추가
+import '../View/phone_view.dart';
+import '../ViewModel/image_view_model.dart'; // ContactPage import 추가
 
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<HomeViewModel>(context);
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: true);
 
-    if (!viewModel.isDataLoaded) {
+    if (!homeViewModel.isDataLoaded) {
       // 데이터가 로드 중인 경우
       return Scaffold(
         appBar: AppBar(
-          title: Text('MAD_Week_1'),
+          title: Text('SpamWise'),
         ),
         body: Center(
           child: CircularProgressIndicator(), // 로딩 중 표시
@@ -23,23 +26,39 @@ class HomeView extends StatelessWidget {
     }
 
     // 연락처 미리보기 데이터 결정
-    final previewContacts = viewModel.contacts.length >= 4
-        ? viewModel.contacts.take(4).toList() // 4개 이상일 때 4개만 가져옴
-        : viewModel.contacts.length >= 2
-        ? viewModel.contacts.take(2).toList() // 2개 이상일 때 2개만 가져옴
-        : []; // 2개 미만일 경우 빈 리스트
+    final previewContacts = homeViewModel.contacts.length >= 4
+        ? homeViewModel.contacts.take(4).toList()
+        : homeViewModel.contacts.length >= 2
+        ? homeViewModel.contacts.take(2).toList()
+        : [];
+
+    // 스팸 필터 미리보기 데이터 결정
+    final previewSpamMessages = homeViewModel.spamMessages.length >= 3
+        ? homeViewModel.spamMessages.take(3).toList()
+        : [];
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-
-            'MAD_Week_1',
-            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/spam_logo.png',
+              height: 40,
+              width: 40,
+            ),
+            SizedBox(width: 8),
+            Text(
+              'SpamWise',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
         ),
         centerTitle: false,
         bottom: PreferredSize(
@@ -57,61 +76,82 @@ class HomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 갤러리 섹션
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GalleryPage()),
-                      );
-                    },
-                    child: Text(
-                      '갤러리',
-                      style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GalleryPage()),
-                      );
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(
-                  viewModel.galleryImages.length,
-                      (index) {
-                    final image = viewModel.galleryImages[index];
-                    return Container(
-                      width: 80,
-                      height: 80,
-                      margin: EdgeInsets.only(right: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: Colors.grey[500]!,
-                          width: 2,
-                        ),
-                        image: DecorationImage(
-                          image: NetworkImage(image.imageUrl), // GalleryImage 객체의 path 속성
-                          fit: BoxFit.cover,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => GalleryPage()),
+                          );
+                        },
+                        child: Text(
+                          '갤러리',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    );
-                  },
-                ),
+                      IconButton(
+                        icon: Icon(Icons.arrow_forward),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => GalleryPage()),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Consumer<GalleryViewModel>(
+                    builder: (context, galleryViewModel, child) {
+                      // 갤러리에 사진이 있을 경우 최대 3개 표시
+                      final previewImages = galleryViewModel.galleryImages.take(3).toList();
+                      print("현재 미리보기 이미지 개수: ${previewImages.length}");
+                      if (galleryViewModel.galleryImages.isEmpty) {
+                        // 갤러리에 사진이 없을 경우
+                        return Center(
+                          child: Text(
+                            '갤러리에 사진이 없습니다.',
+                            style: TextStyle(color: Colors.grey, fontSize: 14),
+                          ),
+                        );
+                      }
+
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          previewImages.length,
+                              (index) {
+                            final image = previewImages[index];
+                            final isLocal = image.imageUrl.startsWith('/');
+                            return Container(
+                              width: 80,
+                              height: 80,
+                              margin: EdgeInsets.symmetric(horizontal: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.grey[500]!, width: 2),
+                                image: DecorationImage(
+                                  image: isLocal
+                                      ? FileImage(File(image.imageUrl))
+                                      : NetworkImage(image.imageUrl),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+
+                ],
               ),
               SizedBox(height: 24),
 
@@ -124,25 +164,20 @@ class HomeView extends StatelessWidget {
                     children: [
                       Text(
                         '연락처',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       IconButton(
                         icon: Icon(Icons.arrow_forward),
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ContactView()), // 연락처 페이지로 이동
+                            MaterialPageRoute(builder: (context) => ContactView()),
                           );
                         },
                       ),
                     ],
                   ),
                   SizedBox(height: 8),
-
-                  // 연락처 미리보기 (2개 이상일 때만 표시)
                   if (previewContacts.isNotEmpty)
                     GridView.builder(
                       shrinkWrap: true,
@@ -160,9 +195,7 @@ class HomeView extends StatelessWidget {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => ContactView(), // 연락처 탭으로 이동
-                              ),
+                              MaterialPageRoute(builder: (context) => ContactView()),
                             );
                           },
                           child: Card(
@@ -177,15 +210,12 @@ class HomeView extends StatelessWidget {
                                 children: [
                                   Text(
                                     contact.name,
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 4),
                                   Text(
                                     contact.phone,
-                                    style: TextStyle(
-                                        fontSize: 12, color: Colors.grey[700]),
+                                    style: TextStyle(fontSize: 12, color: Colors.grey[700]),
                                   ),
                                 ],
                               ),
@@ -196,48 +226,44 @@ class HomeView extends StatelessWidget {
                     ),
                 ],
               ),
-
+              SizedBox(height: 24),
+              // 스팸 필터 섹션
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SpamFilterPage()),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '스팸 필터',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8),
+                    if (previewSpamMessages.isNotEmpty)
+                      Column(
+                        children: previewSpamMessages.map((message) => Text(
+                          message,
+                          style: TextStyle(fontSize: 14, color: Colors.red),
+                        )).toList(),
+                      )
+                    else
+                      Text(
+                        '나의 문자가 스팸이 될 가능성을 확인하세요',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
 
               SizedBox(height: 24),
-
-              // 게시판 섹션
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CommentPage()),
-                  );
-                },
-                child: Text(
-                  '게시판',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(height: 8),
-
-              // 게시판 안내 텍스트
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CommentPage()),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Center(
-                    child: Text(
-                      '연락처를 공유한 사람들과 대화를 나누세요',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -245,7 +271,7 @@ class HomeView extends StatelessWidget {
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey[300]!, width: 1.0), // 경계선 추가
+            top: BorderSide(color: Colors.grey[300]!, width: 1.0),
           ),
         ),
         child: BottomNavigationBar(
@@ -253,12 +279,35 @@ class HomeView extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: '디스커버'),
-            BottomNavigationBarItem(icon: Icon(Icons.report), label: '리포트'),
-            BottomNavigationBarItem(icon: Icon(Icons.menu), label: '메뉴'),
+            BottomNavigationBarItem(icon: Icon(Icons.photo), label: '갤러리'),
+            BottomNavigationBarItem(icon: Icon(Icons.phone), label: '연락처'),
+            BottomNavigationBarItem(icon: Icon(Icons.warning), label: '스팸 확인'),
           ],
           currentIndex: 0,
-          onTap: (index) {},
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GalleryPage()),
+                );
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContactView()),
+                );
+                break;
+              case 3:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SpamFilterPage()),
+                );
+                break;
+            }
+          },
         ),
       ),
       backgroundColor: Colors.white,

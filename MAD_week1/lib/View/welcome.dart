@@ -32,15 +32,13 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // LG Follow 로고 이미지
-                    Text(
-                      'MAD_Week_1',
-                      style: TextStyle(
-                        fontSize: 50,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center,
+                    Image.asset(
+                      'assets/images/spamwise_logo.png',
+                      height: 150,
+                      width: 150,
                     ),
+                    SizedBox(height: 8),
+
                     SizedBox(height: 8),
 
 

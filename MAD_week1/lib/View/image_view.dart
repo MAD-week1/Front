@@ -1,37 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../Model/image.dart';
 import '../ViewModel/image_view_model.dart';
 
-class GalleryPage extends StatelessWidget {
+class GalleryPage extends StatefulWidget {
+  @override
+  _GalleryPageState createState() => _GalleryPageState();
+}
+
+class _GalleryPageState extends State<GalleryPage> {
+  Set<int> selectedImages = {}; // 선택된 이미지 ID 목록
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => GalleryViewModel()..loadGalleryData(),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              '갤러리',
-              style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            '갤러리',
+            style: TextStyle(
+                color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          centerTitle: false,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(1.0),
-            child: Divider(
-              thickness: 1,
-              color: Colors.grey[300],
-            ),
+        ),
+        centerTitle: false,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Divider(
+            thickness: 1,
+            color: Colors.grey[300],
           ),
-          actions: [
+        ),
+        actions: [
+          if (!isSelecting)
             IconButton(
               icon: Icon(Icons.add, color: Colors.black),
               onPressed: () async {
@@ -41,74 +45,176 @@ class GalleryPage extends StatelessWidget {
                 );
 
                 if (result != null) {
-                  final pickedFile = await ImagePicker().pickImage(source: result);
+                  final pickedFile =
+                  await ImagePicker().pickImage(source: result);
                   if (pickedFile != null) {
                     Provider.of<GalleryViewModel>(context, listen: false)
                         .addImage(pickedFile.path);
                   }
-                  else{
-                    print("No file was selected.");
-                  }
                 }
               },
             ),
-          ],
-        ),
-        body: Consumer<GalleryViewModel>(
-          builder: (context, viewModel, child) {
-            if (viewModel.isLoading) {
-              return Center(child: CircularProgressIndicator());
-            }
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 1,
-                ),
-                itemCount: viewModel.galleryImages.length,
-                itemBuilder: (context, index) {
-                  final image = viewModel.galleryImages[index];
-                  final isLocal = image.imageUrl.startsWith('/'); // 로컬 경로인지 확인
-                  return GestureDetector(
-                    onTap: () {
-                      // 이미지 클릭 시 확대 및 슬라이드 가능 화면 표시
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return ImageSliderDialog(
-                            images: viewModel.galleryImages,
-                            initialIndex: index,
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: Colors.grey[500]!,
-                          width: 2,
-                        ),
-                      ),
-                      child: isLocal
-                          ? Image.file(File(image.imageUrl), fit: BoxFit.cover) // 로컬 이미지 처리
-                          : Image.network(image.imageUrl, fit: BoxFit.cover), // 네트워크 이미지 처리
-                    ),
-                  );
-                },
+          IconButton(
+            icon: Icon(isSelecting ? Icons.close : Icons.select_all,
+                color: Colors.black),
+            onPressed: () {
+              setState(() {
+                isSelecting = !isSelecting;
+                if (!isSelecting) selectedImages.clear(); // 선택 모드 종료 시 선택 초기화
+              });
+            },
+          ),
+        ],
+      ),
+      body: Consumer<GalleryViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.isLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (viewModel.galleryImages.isEmpty) {
+            return Center(
+              child: Text(
+                '갤러리에 이미지가 없습니다.',
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
             );
-          },
-        ),
-        backgroundColor: Colors.white,
+          }
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Stack(
+              children: [
+                GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4, // 한 줄에 4개씩 정렬
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 1, // 정사각형 비율 유지
+                  ),
+                  itemCount: viewModel.galleryImages.length,
+                  itemBuilder: (context, index) {
+                    final image = viewModel.galleryImages[index];
+                    final isSelected = selectedImages.contains(image.id);
+                    return GestureDetector(
+                      onTap: isSelecting
+                          ? () {
+                        setState(() {
+                          if (isSelected) {
+                            selectedImages.remove(image.id);
+                          } else {
+                            selectedImages.add(image.id);
+                          }
+                        });
+                      }
+                          : () {
+                        // 일반 모드: 원본 이미지 보기
+                        showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            child: Image.file(
+                              File(image.imageUrl),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.grey[500]!,
+                                width: 2,
+                              ),
+                              image: DecorationImage(
+                                image: FileImage(File(image.imageUrl)),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          if (isSelecting)
+                            Positioned(
+                              top: 0, // 완전 상단
+                              left: 0, // 완전 좌측
+                              child: Checkbox(
+                                value: isSelected,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    if (value == true) {
+                                      selectedImages.add(image.id);
+                                    } else {
+                                      selectedImages.remove(image.id);
+                                    }
+                                  });
+                                },
+                                materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap, // 체크박스 크기 축소
+                                visualDensity: VisualDensity.compact, // 시각적으로 밀집되게
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2), // 둥근 모서리
+                                ),
+                                side: BorderSide(
+                                    color: Colors.white, width: 1.5), // 테두리 설정
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                if (isSelecting && selectedImages.isNotEmpty)
+                  Positioned(
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _confirmDeletion(context, selectedImages.toList());
+                      },
+                      child: Text('${selectedImages.length}개의 이미지 삭제'),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
+      backgroundColor: Colors.white,
     );
   }
+
+  Future<void> _confirmDeletion(BuildContext context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('이미지 삭제'),
+          content: Text('선택된 이미지를 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text('삭제'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      await Provider.of<GalleryViewModel>(context, listen: false)
+          .deleteImages(selectedImages.toList());
+      setState(() {
+        selectedImages.clear();
+      });
+    }
+  }
 }
+
 
 class _ImageSourceSelector extends StatelessWidget {
   @override
@@ -136,57 +242,4 @@ class _ImageSourceSelector extends StatelessWidget {
     );
   }
 }
-class ImageSliderDialog extends StatelessWidget {
-  final List<GalleryImage> images;
-  final int initialIndex;
 
-  const ImageSliderDialog({required this.images, required this.initialIndex});
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.black,
-      insetPadding: EdgeInsets.all(10),
-      child: Stack(
-        children: [
-          PhotoViewGallery.builder(
-            itemCount: images.length,
-            pageController: PageController(initialPage: initialIndex),
-            builder: (context, index) {
-              final image = images[index];
-              final isLocal = image.imageUrl.startsWith('/'); // 로컬 이미지 확인
-              return PhotoViewGalleryPageOptions(
-                imageProvider: isLocal
-                    ? FileImage(File(image.imageUrl)) // 로컬 이미지 처리
-                    : NetworkImage(image.imageUrl), // 네트워크 이미지 처리
-                minScale: PhotoViewComputedScale.contained,
-                maxScale: PhotoViewComputedScale.covered * 2.0,
-                heroAttributes: PhotoViewHeroAttributes(tag: image.imageUrl),
-              );
-            },
-            loadingBuilder: (context, progress) => Center(
-              child: CircularProgressIndicator(
-                value: progress == null
-                    ? null
-                    : progress.cumulativeBytesLoaded / (progress.expectedTotalBytes ?? 1),
-              ),
-            ),
-            backgroundDecoration: BoxDecoration(
-              color: Colors.black,
-            ),
-          ),
-          Positioned(
-            top: 16,
-            left: 16,
-            child: IconButton(
-              icon: Icon(Icons.close, color: Colors.white, size: 28),
-              onPressed: () {
-                Navigator.of(context).pop(); // 다이얼로그 닫기
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

@@ -15,6 +15,8 @@ import 'ViewModel/phone_view_model.dart'; // 연락처 ViewModel 추가
 import 'ViewModel/message_view_model.dart'; // CommentViewModel 추가
 import 'package:google_generative_ai/google_generative_ai.dart'; // GenerativeModel import
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Flutter 위젯 시스템 초기화
 
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
         }),
         ChangeNotifierProvider(create: (context) {
           final galleryViewModel = GalleryViewModel();
-          galleryViewModel.loadGalleryData(); // 갤러리 데이터 로드
+          galleryViewModel.initializeGallery(); // 갤러리 데이터 로드
           return galleryViewModel;
         }),
         ChangeNotifierProvider(create: (_) {
@@ -56,7 +58,7 @@ class MyApp extends StatelessWidget {
             model: 'gemini-1.5-flash',
             apiKey: apiKey,
           );
-          return CommentViewModel(model);
+          return SpamFilterViewModel(model);
         }),
 
         // HomeViewModel에 phoneViewModel과 imageViewModel 전달
@@ -86,7 +88,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => SplashScreen(),
           '/gallery': (context) => GalleryPage(),
-          '/comment': (context) => CommentPage(),
+          '/comment': (context) => SpamFilterPage(),
           '/contact': (context) => ContactView(),
         },
       ),
