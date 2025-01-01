@@ -51,7 +51,7 @@ class _SpamFilterPageState extends State<SpamFilterPage> {
                           itemBuilder: (context, index) {
                             final message = spamFilterViewModel.spamMessages[index];
                             return ListTile(
-                              title: Text(message),
+                              title: Text(message, style: TextStyle(fontSize: 15),),
                             );
                           },
                         ),
@@ -69,18 +69,17 @@ class _SpamFilterPageState extends State<SpamFilterPage> {
                           itemCount: spamFilterViewModel.nonSpamMessages.length,
                           itemBuilder: (context, index) {
                             final message = spamFilterViewModel.nonSpamMessages[index];
-                            return ListTile(
-                              title: Text(message),
-                              trailing: IconButton(
-                                icon: Icon(Icons.copy),
-                                onPressed: () {
-                                  Clipboard.setData(ClipboardData(text: message));
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('텍스트가 복사되었습니다.')),
-                                  );
-                                },
+                            return GestureDetector(
+                              onTap: () {
+                                Clipboard.setData(ClipboardData(text: message));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('복사되었습니다.')),);
+                              },
+                              child: ListTile(
+                                title: Text(message, style: TextStyle(fontSize: 15),),
                               ),
                             );
+
                           },
                         ),
                       ),

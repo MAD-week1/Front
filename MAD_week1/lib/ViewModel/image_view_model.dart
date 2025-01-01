@@ -89,7 +89,6 @@ class GalleryViewModel extends ChangeNotifier {
       await File(filePath).copy(destinationFile.path);
       debugPrint('파일 복사 완료: $destinationPath');
 
-      // 이미지 추가
       final newImage = GalleryImage(
         id: galleryImages.length + 1,
         imageUrl: destinationFile.path,
@@ -120,17 +119,11 @@ class GalleryViewModel extends ChangeNotifier {
       for (var id in ids) {
         final imageToDelete = galleryImages.firstWhere((image) => image.id == id);
         final fileToDelete = File(imageToDelete.imageUrl);
-
-        // 로컬 파일 삭제
         if (await fileToDelete.exists()) {
           await fileToDelete.delete();
         }
-
-        // 이미지 리스트에서 삭제
         galleryImages.removeWhere((image) => image.id == id);
       }
-
-      // JSON 파일 업데이트
       await saveToJson(jsonFilePath);
 
       // 강제로 리스트 참조를 변경
@@ -143,6 +136,7 @@ class GalleryViewModel extends ChangeNotifier {
     notifyListeners(); // 상태 변화 알림
     debugPrint('삭제 후 갤러리 이미지 수: ${galleryImages.length}');
   }
+
 
 
   Future<void> saveToJson(String jsonFilePath) async {

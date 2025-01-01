@@ -5,7 +5,8 @@ import '../ViewModel/Home_view_model.dart';
 import '../ViewModel/image_view_model.dart'; // GalleryViewModel 추가
 import '../View/image_view.dart';
 import '../View/message_view.dart'; // CommentPage import
-import '../View/phone_view.dart'; // ContactPage import 추가
+import '../View/phone_view.dart';
+import '../ViewModel/image_view_model.dart'; // ContactPage import 추가
 
 class HomeView extends StatelessWidget {
   @override
@@ -135,14 +136,11 @@ class HomeView extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: Colors.grey[300],
                                 borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: Colors.grey[500]!,
-                                  width: 2,
-                                ),
+                                border: Border.all(color: Colors.grey[500]!, width: 2),
                                 image: DecorationImage(
                                   image: isLocal
-                                      ? FileImage(File(image.imageUrl)) // 로컬 이미지 처리
-                                      : NetworkImage(image.imageUrl), // 네트워크 이미지 처리
+                                      ? FileImage(File(image.imageUrl))
+                                      : NetworkImage(image.imageUrl),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -152,6 +150,7 @@ class HomeView extends StatelessWidget {
                       );
                     },
                   ),
+
                 ],
               ),
               SizedBox(height: 24),
